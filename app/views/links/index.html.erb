@@ -1,0 +1,31 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Analytics</h1>
+<div class="row">
+  <table  class="table">
+    <thead>
+      <tr>
+        <th>Shortened url</th>
+        <th>Clicks</th>
+        <th>Ip Address</th>
+        <th>Country</th>
+        <th colspan="3"></th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @links.each do |link| %>
+        <tr>
+
+          <td><%= link_to "#{request.base_url}/#{link.shortened_url}", link.shortened_url, target: '_blank' %></td>
+          <td><%= link.clicks.map(&:count).inject(:+)%></td>
+          <td><%= link.clicks.order("count DESC").last.ip_address %></td>
+          <td><%= link.clicks.order("count DESC").last.country %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+<br>
+
+
