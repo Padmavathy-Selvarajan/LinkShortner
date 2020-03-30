@@ -27,6 +27,7 @@ RSpec.describe LinksController do
       expect(response).to render_template("index")
     end
   end
+
   describe "POST Create" do
     before(:each) do
       user = FactoryBot.create(:user)
@@ -35,10 +36,12 @@ RSpec.describe LinksController do
     it "create a link with given url" do
       link = Link.new(valid_attributes)
       click = Click.create(link_id: link.id, user_id: User.last.id, count: 0)
+      link.clicks << click
       expect(link.save).to eq(true)
       expect(click.save).to eq(true)
       expect(Link.count).to eq(1)
       expect(Click.count).to eq(1)
+      expect(link.clicks.count).to eq(1)
       post :create, link: valid_attributes
     end
     it "Error message when url not given" do
