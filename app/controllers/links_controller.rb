@@ -2,9 +2,11 @@ require 'socket'
 require 'date'
 
 class LinksController < ApplicationController
+  #If i remove this line even the authentication will work once i have been removed the commented line from routes
   before_filter :authenticate_user!, only: [:new,:create]
   before_action :get_location
   respond_to :html, :js
+  
   attr_reader :ip_address
   attr_reader :country
 
