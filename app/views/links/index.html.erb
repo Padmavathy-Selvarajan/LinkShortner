@@ -19,8 +19,9 @@
 
           <td><%= link_to "#{request.base_url}/#{link.shortened_url}", link.shortened_url, target: '_blank' %></td>
           <td><%= link.clicks.map(&:count).inject(:+)%></td>
-          <td><%= link.clicks.order("count DESC").last.ip_address %></td>
-          <td><%= link.clicks.order("count DESC").last.country %></td>
+          <% byebug %>
+          <td><%= link.clicks.order("count DESC").first.ip_address %></td>
+          <td><%= link.clicks.order("count DESC").first.country %></td>
         </tr>
       <% end %>
     </tbody>

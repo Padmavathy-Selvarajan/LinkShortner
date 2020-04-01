@@ -30,6 +30,7 @@ class LinksController < ApplicationController
         click.count += 1
         click.save
       elsif click && click.user_id != current_user.id
+        click.count = 0
         Click.create(link_id: link.id, user_id: current_user.id, count: "#{click.count += 1}", ip_address: ip_address, country: country)
       end
       redirect_to link.given_url
