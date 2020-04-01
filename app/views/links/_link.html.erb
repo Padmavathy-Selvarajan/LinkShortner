@@ -1,6 +1,14 @@
 
-<p>
-  <strong>Shortened url:</strong>
-  <%= link_to "#{request.base_url}/#{link.shortened_url}", link.shortened_url, target: '_blank' %>
-</p>
+<% if @link.errors.any? %>
+	<div id="error_explanation">
+	  <% @link.errors.full_messages.each do |message| %>
+	    <%= message %>
+	  <% end %>
+	</div>
+<% else %>
+	<p>
+	  <strong>Shortened url:</strong>
+	  <%= link_to "#{request.base_url}/#{link.shortened_url}", link.shortened_url, target: '_blank' %>
+	</p>
+<% end %>
 

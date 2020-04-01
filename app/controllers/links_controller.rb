@@ -6,7 +6,7 @@ class LinksController < ApplicationController
   before_filter :authenticate_user!, only: [:new,:create]
   before_action :get_location
   respond_to :html, :js
-  
+
   attr_reader :ip_address
   attr_reader :country
 
@@ -26,9 +26,11 @@ class LinksController < ApplicationController
     link = Link.find_by(shortened_url: params["short_url"])
     click = Click.where(link: link.id).last
     if link.created_at < link.created_at + 30.days
-      if click 
+      if click && click.user_id == current_user.id
         click.count += 1
         click.save
+      elsif click && click.user_id != current_user.id
+        Click.create(link_id: link.id, user_id: current_user.id, count: "#{click.count += 1}", ip_address: ip_address, country: country)
       end
       redirect_to link.given_url
     else
@@ -51,6 +53,7 @@ class LinksController < ApplicationController
         format.json
         format.html { render :new }
       else
+        format.js 
         format.html { render :new, notice: 'Enter valid URL'}
         format.json { render json: @link.errors, status: :unprocessable_entity }
       end
@@ -60,8 +63,8 @@ class LinksController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def get_location
-      @ip_address = Socket.ip_address_list.find { |ai| ai.ipv4? && !ai.ipv4_loopback? }.ip_address
-      @country = Geocoder.search(ip_address).first.region
+      @ip_address = current_user.current_sign_in_ip
+      @country = Geocoder.search(ip_address).first.country
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
